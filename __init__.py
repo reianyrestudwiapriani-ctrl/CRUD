@@ -1,0 +1,24 @@
+from flask import Flask
+from config import Config
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+db = SQLAlchemy()
+migrate = Migrate()
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    # inisialisasi db dan migrate dengan app
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # register routes
+    from app.routes import register_routes
+    register_routes(app)
+
+    # import models agar Flask-Migrate mengenalinya
+    from app.model import user, todo
+
+    return app
